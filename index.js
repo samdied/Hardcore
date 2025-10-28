@@ -15,23 +15,50 @@ app.get('/', (req, res) => {
   res.send('Bot has arrived');
 });
 
-app.listen(5000, () => {
-  console.log('Server started on port 5000');
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server started on port ${PORT}`);
 });
 
 function createBot() {
-   const bot = mineflayer.createBot({
-      username: config['bot-account']['username'],
-      password: config['bot-account']['password'],
-      auth: config['bot-account']['type'],
-      host: config.server.ip,
-      port: config.server.port,
-      version: config.server.version,
-   });
+   let bot;
+   
+   try {
+      bot = mineflayer.createBot({
+         username: config['bot-account']['username'],
+         password: config['bot-account']['password'],
+         auth: config['bot-account']['type'],
+         host: config.server.ip,
+         port: config.server.port,
+         version: config.server.version,
+         connectTimeout: 60000,
+         checkTimeoutInterval: 60000,
+         hideErrors: false,
+         skipValidation: true
+      });
+   } catch (error) {
+      console.log(`\x1b[31m[ERROR] Failed to create bot: ${error.message}`, '\x1b[0m');
+      if (config.utils['auto-reconnect']) {
+         console.log('[INFO] Will retry connection in 30 seconds...');
+         setTimeout(createBot, 30000);
+      }
+      return;
+   }
 
    bot.loadPlugin(pathfinder);
-   const mcData = require('minecraft-data')(bot.version);
-   const defaultMove = new Movements(bot, mcData);
+   
+   let mcData, defaultMove;
+   try {
+      mcData = require('minecraft-data')(bot.version);
+      defaultMove = new Movements(bot, mcData);
+   } catch (error) {
+      console.log(`\x1b[33m[WARN] Failed to load pathfinder data: ${error.message}`, '\x1b[0m');
+   }
+   
    bot.settings.colorsEnabled = false;
 
    let pendingPromise = Promise.resolve();
@@ -167,9 +194,30 @@ function createBot() {
       )
    );
 
-   bot.on('error', (err) =>
-      console.log(`\x1b[31m[ERROR] ${err.message}`, '\x1b[0m')
-   );
+   bot.on('error', (err) => {
+      console.log(`\x1b[31m[ERROR] ${err.message}`, '\x1b[0m');
+      if (err.message.includes('timed out') || err.message.includes('ECONNREFUSED')) {
+         console.log('[INFO] Connection issue detected. Will retry on next reconnect cycle.');
+      }
+   });
+
+   bot.on('login', () => {
+      console.log('[INFO] Successfully logged into the server');
+   });
 }
 
-createBot();
+// Process-level error handlers to prevent crashes
+process.on('uncaughtException', (error) => {
+   console.error('\x1b[31m[UNCAUGHT EXCEPTION]\x1b[0m', error.message);
+   console.error('Stack:', error.stack);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+   console.error('\x1b[31m[UNHANDLED REJECTION]\x1b[0m', reason);
+});
+
+// Start the bot with delay to ensure Express server is ready
+setTimeout(() => {
+   console.log('[INFO] Starting Minecraft bot...');
+   createBot();
+}, 2000);
