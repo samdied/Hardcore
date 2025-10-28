@@ -6,8 +6,8 @@
   },
 
   "server": {
-    "ip": "hardcored.play.hosting", 
-    "port": 25565,   
+    "ip": "hardcoredsmp.aternos.me", 
+    "port": 58564,   
     "version": "1.12.1"   
   },
   
