@@ -112,6 +112,24 @@ function createBot() {
    bot.once('spawn', () => {
       console.log('\x1b[33m[AfkBot] Bot joined the server', '\x1b[0m');
 
+      // Auto-cycle: disconnect and rejoin after specified hours
+      if (config.utils['auto-cycle'] && config.utils['auto-cycle'].enabled) {
+         const cycleHours = config.utils['auto-cycle']['cycle-hours'] || 6;
+         const cycleTime = cycleHours * 60 * 60 * 1000; // Convert hours to milliseconds
+         
+         console.log(`\x1b[36m[AfkBot] Auto-cycle enabled: Bot will rejoin every ${cycleHours} hour(s)`, '\x1b[0m');
+         
+         const cycleTimer = setTimeout(() => {
+            console.log(`\x1b[36m[AfkBot] ${cycleHours}-hour cycle complete. Leaving server to rejoin...`, '\x1b[0m');
+            bot.quit(); // Gracefully disconnect
+         }, cycleTime);
+         
+         // Clear timer if bot disconnects early
+         bot.once('end', () => {
+            clearTimeout(cycleTimer);
+         });
+      }
+
       if (config.utils['auto-auth'].enabled) {
          console.log('[INFO] Started auto-auth module');
 

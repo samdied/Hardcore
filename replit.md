@@ -3,7 +3,16 @@
 ## Overview
 This is a Minecraft AFK bot built with Node.js and Mineflayer. It connects to Minecraft servers and helps keep your account active with various automation features.
 
-## Recent Changes (October 28, 2025)
+## Recent Changes (November 1, 2025)
+
+### Auto-Cycle Feature
+- ✅ **NEW:** Bot automatically leaves and rejoins every 6 hours (configurable)
+- ✅ Infinite cycle: After leaving, bot immediately reconnects
+- ✅ Configurable in `settings.json` under `auto-cycle`
+- ✅ Can change cycle duration (default: 6 hours)
+- ✅ Can enable/disable the feature
+
+## Previous Changes (October 28, 2025)
 
 ### Railway Deployment Fixes
 - ✅ Fixed timeout errors (extended to 60 seconds)

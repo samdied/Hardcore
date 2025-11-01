@@ -42,6 +42,9 @@ Edit `settings.json` to configure:
 - Auto-auth settings
 - Anti-AFK settings
 - Chat messages
+- **Auto-cycle** (NEW): Bot automatically leaves and rejoins every X hours
+  - `enabled`: true/false
+  - `cycle-hours`: number of hours (default: 6)
 
 ## Monitoring
 

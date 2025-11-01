@@ -39,6 +39,11 @@
       ]
     },
 
+    "auto-cycle": {
+      "enabled": true,
+      "cycle-hours": 6
+    },
+
     "chat-log": true,
     "auto-reconnect": true,
     "auto-reconnect-delay": 500
