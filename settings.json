@@ -6,8 +6,8 @@
   },
 
   "server": {
-    "ip": "hardcoredsmp.aternos.me", 
-    "port": 58564,   
+    "ip": "diddykasmp.aternos.me", 
+    "port": 24240,   
     "version": "1.12.1"   
   },
   
