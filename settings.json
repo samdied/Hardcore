@@ -1,14 +1,14 @@
 {
   "bot-account": {
-    "username": "Diddy", 
+    "username": "Diddy",
     "password": "",
     "type": "mojang"
   },
 
   "server": {
-    "ip": "diddykasmp.aternos.me", 
-    "port": 24240,   
-    "version": "1.12.1"   
+    "ip": "diddykasmp.aternos.me",
+    "port": 24240,
+    "version": "1.12.1"
   },
   
   "position": {
@@ -33,7 +33,6 @@
       "enabled": false,
       "repeat": false,
       "repeat-delay": 120,
-
       "messages": [
         "24/7"
       ]
@@ -42,6 +41,12 @@
     "auto-cycle": {
       "enabled": true,
       "cycle-minutes": 30
+    },
+
+    "auto-move": {
+      "enabled": true,
+      "distance": 50,
+      "interval": 60000
     },
 
     "chat-log": true,
