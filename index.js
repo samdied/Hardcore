@@ -112,15 +112,25 @@ function createBot() {
    bot.once('spawn', () => {
       console.log('\x1b[33m[AfkBot] Bot joined the server', '\x1b[0m');
 
-      // Auto-cycle: disconnect and rejoin after specified hours
+      // Auto-cycle: disconnect and rejoin after specified time
       if (config.utils['auto-cycle'] && config.utils['auto-cycle'].enabled) {
-         const cycleHours = config.utils['auto-cycle']['cycle-hours'] || 6;
-         const cycleTime = cycleHours * 60 * 60 * 1000; // Convert hours to milliseconds
+         let cycleTime, cycleLabel;
          
-         console.log(`\x1b[36m[AfkBot] Auto-cycle enabled: Bot will rejoin every ${cycleHours} hour(s)`, '\x1b[0m');
+         // Support both minutes and hours
+         if (config.utils['auto-cycle']['cycle-minutes']) {
+            const cycleMinutes = config.utils['auto-cycle']['cycle-minutes'];
+            cycleTime = cycleMinutes * 60 * 1000; // Convert minutes to milliseconds
+            cycleLabel = `${cycleMinutes} minute(s)`;
+         } else {
+            const cycleHours = config.utils['auto-cycle']['cycle-hours'] || 6;
+            cycleTime = cycleHours * 60 * 60 * 1000; // Convert hours to milliseconds
+            cycleLabel = `${cycleHours} hour(s)`;
+         }
+         
+         console.log(`\x1b[36m[AfkBot] Auto-cycle enabled: Bot will rejoin every ${cycleLabel}`, '\x1b[0m');
          
          const cycleTimer = setTimeout(() => {
-            console.log(`\x1b[36m[AfkBot] ${cycleHours}-hour cycle complete. Leaving server to rejoin...`, '\x1b[0m');
+            console.log(`\x1b[36m[AfkBot] Cycle complete (${cycleLabel}). Leaving server to rejoin...`, '\x1b[0m');
             bot.quit(); // Gracefully disconnect
          }, cycleTime);
          
