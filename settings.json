@@ -41,7 +41,7 @@
 
     "auto-cycle": {
       "enabled": true,
-      "cycle-minutes": 1
+      "cycle-minutes": 30
     },
 
     "chat-log": true,
